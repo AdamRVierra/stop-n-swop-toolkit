@@ -133,7 +133,6 @@ bool sns_add_params(uint8_t game, uint8_t flag, uint16_t params) {
 	snsKeyCount++;
 	
 	write_checksum();
-	sns_clonedata();
 	
 	return true;
 }
@@ -155,7 +154,6 @@ bool sns_remove(uint8_t game, uint8_t flag) {
             snsKeyCount--;
 
             write_checksum();
-			sns_clonedata();
 			
             return true;
         }
@@ -198,13 +196,9 @@ bool sns_contains(uint8_t game, uint8_t flag) {
     return false;
 }
 
-void sns_init(bool clone) {
+void sns_reset() {
 	write_u32(snsPayload, SNS_MAGIC);
 	sns_add(0, SNS_GAME_ID);
-
-	if (clone) {
-		sns_clonedata();
-	}
 }
 
 void sns_payloadtest() { // Simulate owning a red egg from Banjo-Kazooie
@@ -214,36 +208,29 @@ void sns_payloadtest() { // Simulate owning a red egg from Banjo-Kazooie
 	sns_clonedata();
 }
 
-void sns_scan(void) {
-	//sns_payloadtest();
-	
-	const uint8_t *ram  = (const uint8_t*)0x80000000;
-    const uint8_t *end  = (const uint8_t*)(is_memory_expanded() ? 0x80800000 : 0x80400000);
-	
+void sns_init(void) {
 	snsLoadedExtGamePayload = false;
 	snsKeyCount = 0;
 	
-	for (const uint8_t *p = ram; p + SNS_PAYLOAD_LENGTH <= end; p += 0x80) {
-		if (read_u32(p) == SNS_MAGIC && check_checksum(p)) {
-			memcpy((uint8_t*)snsPayload, p, SNS_PAYLOAD_LENGTH);
-			snsLoadedExtGamePayload = true;
-
-			p = snsPayload + 4;
-			
-			snsKeyCount = 0;
-			
-			for (int i = 0; i < SNS_MAX_KEYS; i++) {
-				if (read_u32(p) == 0) {
-					break; 
-				}
-				
-				p += 4;
-				snsKeyCount++;
-			}
-			
-			return;
-        }
-    }
+	const uint8_t *origin = (const uint8_t *)SNS_ORIGIN;
 	
-	sns_init(false);
+	if (read_u32(origin) == SNS_MAGIC) {
+		memcpy((uint8_t*)snsPayload, origin, SNS_PAYLOAD_LENGTH);
+		snsLoadedExtGamePayload = true;
+		
+		const uint8_t *p = snsPayload + 4; 
+		
+		for (int i = 0; i < SNS_MAX_KEYS; i++) {
+			if (read_u32(p) == 0) {
+				break; 
+			}
+				
+			p += 4;
+			snsKeyCount++;
+		}
+		
+		return;
+	}
+
+	sns_reset();
 }

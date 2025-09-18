@@ -42,7 +42,7 @@ sprite_t * load_sprite(const char *sprite_path) {
 }
 
 int main(void) {
-	sns_scan();
+	sns_init();
 	
 	display_init(RESOLUTION_640x480, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
 	dfs_init(DFS_DEFAULT_LOCATION);
@@ -121,6 +121,8 @@ int main(void) {
 				else {
 					sns_remove(SNS_GAMEID_BANJOKAZOOIE, SNS_Items[cursor_pos].unlock_key);
 				}
+				
+				sns_clonedata();
 				
 				btnDown = true;
 			}
