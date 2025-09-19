@@ -122,7 +122,7 @@ int main(void) {
 					sns_remove(SNS_GAMEID_BANJOKAZOOIE, SNS_Items[cursor_pos].unlock_key);
 				}
 				
-				sns_clonedata();
+				sns_flush();
 				
 				btnDown = true;
 			}

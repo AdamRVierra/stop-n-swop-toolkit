@@ -5,8 +5,11 @@
 #define SNS_MAGIC           0xC908C52Fu // Header used to be detected by scan. Supplied by Banjo-Kazooie.
 #define SNS_MAX_KEYS        29  // Capacity of the Payload.
 #define SNS_GAME_ID			SNS_GAMEID_STOPNSWOP // Your game's SNS ID.
-#define SNS_COPIES			30 // How many copies to colone with sns_clonedata.
+#define SNS_COPIES			100 // How many copies to colone with sns_flush.
 #define SNS_ORIGIN			0x80000380u // Boot scans + writes to this address.
+
+#define SNS_DOMAIN_START    0x80300000u // Start of RDRAM area to write SNS Clone Payloads
+#define SNS_DOMAIN_END		0x80400000u // End of RDRAM area to write SNS Clone Payloads
 
 extern uint8_t  snsPayload[SNS_PAYLOAD_LENGTH]; // Payload represented as bytes. Contains magic key, current keys, and two checksums.
 extern uint8_t  snsKeyCount; // Total amount of keys currently occupying the payload stack.
@@ -19,6 +22,6 @@ bool sns_add_params(uint8_t game, uint8_t flag, uint16_t params); // Add a key t
 bool sns_remove(uint8_t game, uint8_t flag); // Removes a key from the payload. Returns false if key isn't found.
 bool sns_contains(uint8_t game, uint8_t flag); // Returns true if the payload contains a key.
 uint16_t sns_get_params(uint8_t game, uint8_t flag); // Get the parameters associated with the key. Returns 0 if not found.
-void sns_clonedata(); // Clone the manifest data around the RAM, so the next game has many chances to find it. 
+void sns_flush(); // Clone the manifest data around the RAM, so the next game has many chances to find it. 
 
 #endif 

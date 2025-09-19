@@ -74,18 +74,16 @@ uint16_t sns_pairtokey(uint8_t game, uint8_t flag)  {
 	return (game << 8) | (flag & 0xFFu);
 }
 
-void sns_clonedata() {
-    const uintptr_t ramEnd = is_memory_expanded() ? 0x80800000 : 0x80400000;
-	
+void sns_flush() {
 	int placed = 0;
 	
-	uintptr_t p = 0x80010000;
+	uintptr_t p = SNS_DOMAIN_START;
 
-    while (p + SNS_PAYLOAD_LENGTH <= ramEnd && placed < SNS_COPIES)
+    while (p + SNS_PAYLOAD_LENGTH <= SNS_DOMAIN_END && placed < SNS_COPIES)
     {
         uint8_t *slot = (uint8_t*)p;
 		
-		p += 0x10000;
+		p += 0x2000;
 		
         if (read_u32(slot) != SNS_MAGIC && !sns_empty_block(slot)) {
             continue;
@@ -106,16 +104,6 @@ void write_checksum() {
 	
 	write_u32(&snsPayload[SNS_PAYLOAD_LENGTH - 8], checksum0);    
     write_u32(&snsPayload[SNS_PAYLOAD_LENGTH - 4], checksum1);  
-}
-
-bool check_checksum(const uint8_t *p) {
-	uint32_t checksum0, checksum1;
-    bk_crc_pair(p, SNS_PAYLOAD_LENGTH - 8, &checksum0, &checksum1); 
-	
-    uint32_t exchecksum0 = read_u32(p + SNS_PAYLOAD_LENGTH - 8);
-    uint32_t exchecksum1 = read_u32(p + SNS_PAYLOAD_LENGTH - 4);       
-	
-    return (checksum0 == exchecksum0) && (checksum1 == exchecksum1);
 }
 
 bool sns_add(uint8_t game, uint8_t flag) {
@@ -205,7 +193,10 @@ void sns_payloadtest() { // Simulate owning a red egg from Banjo-Kazooie
 	write_u32(snsPayload, SNS_MAGIC);
 	sns_add(0, SNS_GAMEID_STOPNSWOP);
 	sns_add(SNS_GAMEID_BANJOKAZOOIE, SNS_BANJOKAZOOIE_REDEGG);
-	sns_clonedata();
+	sns_flush();
+	
+	uint8_t *origin = (uint8_t *)SNS_ORIGIN;
+	memcpy(origin, (uint8_t*)snsPayload, SNS_PAYLOAD_LENGTH);
 }
 
 void sns_init(void) {
@@ -228,6 +219,8 @@ void sns_init(void) {
 			p += 4;
 			snsKeyCount++;
 		}
+		
+		memset((uint8_t *)SNS_ORIGIN, 0, 128);
 		
 		return;
 	}
