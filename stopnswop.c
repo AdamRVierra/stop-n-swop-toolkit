@@ -10,23 +10,23 @@ uint8_t snsPayload[SNS_PAYLOAD_LENGTH];
 uint8_t snsKeyCount;
 bool snsLoadedExtGamePayload;
 
-static inline void write_u32(uint8_t *p, uint32_t v){
+static inline void write_u32(uint8_t *p, uint32_t v) {
     p[0] = (uint8_t)(v>>24); 
 	p[1] = (uint8_t)(v>>16); 
 	p[2] = (uint8_t)(v>>8); 
 	p[3] = (uint8_t)v;
 }
 
-static inline uint32_t read_u32(const uint8_t *p){
+static inline uint32_t read_u32(const uint8_t *p) {
     return ((uint32_t)p[0] << 24) | ((uint32_t)p[1] << 16) | ((uint32_t)p[2] << 8) | p[3];
 }
 
-static inline void write_u16(uint8_t *p, uint32_t v){
+static inline void write_u16(uint8_t *p, uint32_t v) {
     p[0] = (uint8_t)(v >> 8); 
 	p[1] = (uint8_t)v;
 }
 
-static inline uint32_t read_u16(const uint8_t *p){
+static inline uint32_t read_u16(const uint8_t *p) {
     return ((uint32_t)p[0] << 8) | p[1];
 }
 
@@ -70,7 +70,7 @@ static bool sns_empty_block(const uint8_t *p) {
     return true;
 }
 
-uint16_t sns_pairtokey(uint8_t game, uint8_t flag)  {
+uint16_t sns_pairtokey(uint8_t game, uint8_t flag) {
 	return (game << 8) | (flag & 0xFFu);
 }
 
