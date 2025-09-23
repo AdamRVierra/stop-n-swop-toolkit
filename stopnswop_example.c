@@ -3,8 +3,8 @@
 #include <string.h>
 #include <stdint.h>
 #include <libdragon.h>
-#include "stopnswop.h"
-#include "stopnswopdefs.h"
+#include "stopnswop/stopnswop.h"
+#include "stopnswop/stopnswopdefs.h"
 
 typedef struct { 
     const char  *name;

@@ -2,63 +2,13 @@
 #include <malloc.h>
 #include <string.h>
 #include <stdint.h>
-#include <libdragon.h>
+#include <stdbool.h> 
 #include "stopnswop.h"
 #include "stopnswopdefs.h"
 
 uint8_t snsPayload[SNS_PAYLOAD_LENGTH];
 uint8_t snsKeyCount;
 bool snsLoadedExtGamePayload;
-
-static inline void write_u32(uint8_t *p, uint32_t v) {
-    p[0] = (uint8_t)(v>>24); 
-	p[1] = (uint8_t)(v>>16); 
-	p[2] = (uint8_t)(v>>8); 
-	p[3] = (uint8_t)v;
-}
-
-static inline uint32_t read_u32(const uint8_t *p) {
-    return ((uint32_t)p[0] << 24) | ((uint32_t)p[1] << 16) | ((uint32_t)p[2] << 8) | p[3];
-}
-
-static inline void write_u16(uint8_t *p, uint32_t v) {
-    p[0] = (uint8_t)(v >> 8); 
-	p[1] = (uint8_t)v;
-}
-
-static inline uint32_t read_u16(const uint8_t *p) {
-    return ((uint32_t)p[0] << 8) | p[1];
-}
-
-static inline uint64_t crc_shift(uint64_t s) {
-    s = (((s >> 1) | (s << 32)) ^ ((s << 44) >> 32)) & 0x1FFFFFFFF;
-    s ^= (s >> 20) & 0xFFF;
-    return s;
-}
-
-void bk_crc_pair(const uint8_t *data, size_t len, uint32_t *cs0, uint32_t *cs1) {
-    uint64_t sum = 0x13108B3C1;
-	uint64_t acc0 = 0;
-	uint64_t acc1 = 0;
-    uint32_t sd = 0;
-
-    for (size_t i = 0; i < len; i++) {
-        sum += (uint64_t)data[i] << (sd & 0xF);
-        sum  = crc_shift(sum);
-        sd  += 7;
-        acc0 ^= sum;
-    }
-	
-    for (size_t i = len; i-- > 0; ) {
-        sum += (uint64_t)data[i] << (sd & 0xF);
-        sum  = crc_shift(sum);
-        sd  += 3;
-        acc1 ^= sum;
-    }
-
-    *cs0 = (uint32_t)acc0;
-    *cs1 = (uint32_t)acc1;
-}
 
 static bool sns_empty_block(const uint8_t *p) {
     for (size_t i = 0; i < SNS_PAYLOAD_LENGTH; i++) {
@@ -85,12 +35,11 @@ void sns_flush() {
 		
 		p += 0x2000;
 		
-        if (read_u32(slot) != SNS_MAGIC && !sns_empty_block(slot)) {
+        if (sns_read_u32(slot) != SNS_MAGIC && !sns_empty_block(slot)) {
             continue;
 		}
 
         memcpy(slot, snsPayload, SNS_PAYLOAD_LENGTH);
-		data_cache_hit_writeback(slot, SNS_PAYLOAD_LENGTH);
 		
         placed++;
     }
@@ -102,8 +51,8 @@ void write_checksum() {
 	
 	bk_crc_pair(snsPayload, SNS_PAYLOAD_LENGTH - 8, &checksum0, &checksum1);
 	
-	write_u32(&snsPayload[SNS_PAYLOAD_LENGTH - 8], checksum0);    
-    write_u32(&snsPayload[SNS_PAYLOAD_LENGTH - 4], checksum1);  
+	sns_write_u32(&snsPayload[SNS_PAYLOAD_LENGTH - 8], checksum0);    
+    sns_write_u32(&snsPayload[SNS_PAYLOAD_LENGTH - 4], checksum1);  
 }
 
 bool sns_add(uint8_t game, uint8_t flag) {
@@ -112,12 +61,11 @@ bool sns_add(uint8_t game, uint8_t flag) {
 
 bool sns_add_params(uint8_t game, uint8_t flag, uint16_t params) {
 	if (snsKeyCount == SNS_MAX_KEYS) {
-		debugf("error: Payload stack is full!");
 		return false;
 	}
 	
 	uint16_t key = sns_pairtokey(game, flag);
-	write_u32(&snsPayload[4 + snsKeyCount * 4], key + (params << 16));
+	sns_write_u32(&snsPayload[4 + snsKeyCount * 4], key + (params << 16));
 	snsKeyCount++;
 	
 	write_checksum();
@@ -131,14 +79,14 @@ bool sns_remove(uint8_t game, uint8_t flag) {
 	uint16_t key = sns_pairtokey(game, flag);
 
     for (int i = 0; i < snsKeyCount; i++) {
-        if (read_u16(p + 2) == key) {
+        if (sns_read_u16(p + 2) == key) {
             for (int j = i; j < snsKeyCount - 1; j++) {
-                uint8_t *dst = (snsPayload + 4) + j*4;
-                uint8_t *src = (snsPayload + 4) + (j+1)*4;
-                write_u32(dst, read_u32(src));
+                uint8_t *dst = (snsPayload + 4) + j * 4;
+                uint8_t *src = (snsPayload + 4) + (j + 1)*4;
+                sns_write_u32(dst, sns_read_u32(src));
             }
 
-            write_u32((snsPayload + 4) + (snsKeyCount - 1)*4, 0);
+            sns_write_u32((snsPayload + 4) + (snsKeyCount - 1)*4, 0);
             snsKeyCount--;
 
             write_checksum();
@@ -158,8 +106,8 @@ uint16_t sns_get_params(uint8_t game, uint8_t flag) {
 	uint16_t key = sns_pairtokey(game, flag);
 	
     for (int i = 0; i < snsKeyCount; i++) {
-        if (read_u16(p + 2) == key) {
-            return read_u16(p);
+        if (sns_read_u16(p + 2) == key) {
+            return sns_read_u16(p);
 		}
 		
 		p += 4;
@@ -174,7 +122,7 @@ bool sns_contains(uint8_t game, uint8_t flag) {
 	uint16_t key = sns_pairtokey(game, flag);
 	
     for (int i = 0; i < snsKeyCount; i++) {
-        if (read_u16(p + 2) == key) {
+        if (sns_read_u16(p + 2) == key) {
             return true;
 		}
 		
@@ -185,12 +133,12 @@ bool sns_contains(uint8_t game, uint8_t flag) {
 }
 
 void sns_reset() {
-	write_u32(snsPayload, SNS_MAGIC);
+	sns_write_u32(snsPayload, SNS_MAGIC);
 	sns_add(0, SNS_GAME_ID);
 }
 
 void sns_payloadtest() { // Simulate owning a red egg from Banjo-Kazooie
-	write_u32(snsPayload, SNS_MAGIC);
+	sns_write_u32(snsPayload, SNS_MAGIC);
 	sns_add(0, SNS_GAMEID_STOPNSWOP);
 	sns_add(SNS_GAMEID_BANJOKAZOOIE, SNS_BANJOKAZOOIE_REDEGG);
 	sns_flush();
@@ -205,14 +153,14 @@ void sns_init(void) {
 	
 	const uint8_t *origin = (const uint8_t *)SNS_ORIGIN;
 	
-	if (read_u32(origin) == SNS_MAGIC) {
+	if (sns_read_u32(origin) == SNS_MAGIC) {
 		memcpy((uint8_t*)snsPayload, origin, SNS_PAYLOAD_LENGTH);
 		snsLoadedExtGamePayload = true;
 		
 		const uint8_t *p = snsPayload + 4; 
 		
 		for (int i = 0; i < SNS_MAX_KEYS; i++) {
-			if (read_u32(p) == 0) {
+			if (sns_read_u32(p) == 0) {
 				break; 
 			}
 				

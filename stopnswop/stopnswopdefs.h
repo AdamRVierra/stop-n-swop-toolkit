@@ -2,7 +2,7 @@
 #ifndef STOPNSWOPDEFS_H
 #define STOPNSWOPDEFS_H
 
-enum SNS_GameID {  // Add your own game here and collaborate with others using this to not conflict IDs.  Supports up to 256 games.
+enum SNS_GameID {  // Add your own game here and collaborate with others using this to not conflict IDs.  Supports up to 255 games.
 	SNS_GAMEID_CHECKGAME = 0,
 	SNS_GAMEID_BANJOKAZOOIE = 1,
 	SNS_GAMEID_STOPNSWOP    = 2
