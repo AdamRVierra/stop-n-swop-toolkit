@@ -42,7 +42,7 @@ This feature was originally intended for Banjo-Kazooie as early versions of N64s
  - [Install libdragon environment](https://github.com/DragonMinded/libdragon/wiki/Installing-libdragon) 
  
 2. *Building a ROM*
- - Take `ipl3.c` and the `stopnswop` folder from the source code, copy both into *libdragon/boot/*
+ - Take `ipl3.c` and the `stopnswop` folder from this repository, copy both into *libdragon/boot/*
   - This is needed to include the payload scan into the ROM's boot process.
  - Inside libdragon/boot/, run `make clean && make`
  - Retrieve the built *ipl3_dev.z64* inside *libdragon/boot/bin/* , copy it back into the source code directory.
@@ -63,3 +63,4 @@ This project is for educational and preservation purposes.
  - adam@adamvierra.com
  - bsky: kbmadam.bsky.social
  - X: x.com/Koolboyman
+
