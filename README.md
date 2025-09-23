@@ -51,10 +51,15 @@ This feature was originally intended for Banjo-Kazooie as early versions of N64s
 
 ## Reseting Banjo-Kazooie's SNS Data
 Unfortnuately, there's no way to erase what items have been unlocked or acquired. The only way is with a Gameshark.
+
 Reset All SNS Collectibles/Locations Codes:
+
 *NTSC-U 1.0: 80283400 0000*
+
 *PAL:        80283220 0000*
+
 *NTSC-U 1.1: 80282240 0000*
+
 *NTSC-J:     80282240 0000*
 
 ## Disclaimer
@@ -71,5 +76,6 @@ This project is for educational and preservation purposes.
  - adam@adamvierra.com
  - bsky: kbmadam.bsky.social
  - X: x.com/Koolboyman
+
 
 
