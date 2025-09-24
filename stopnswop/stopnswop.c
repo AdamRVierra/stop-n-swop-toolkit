@@ -168,7 +168,7 @@ void sns_init(void) {
 			snsKeyCount++;
 		}
 		
-		memset((uint8_t *)SNS_ORIGIN, 0, 128);
+		memset((uint8_t *)SNS_ORIGIN, 0, SNS_PAYLOAD_LENGTH);
 		
 		return;
 	}

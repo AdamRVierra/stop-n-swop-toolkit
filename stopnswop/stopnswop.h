@@ -6,10 +6,10 @@
 #define SNS_MAX_KEYS        29  // Capacity of the Payload.
 #define SNS_GAME_ID			SNS_GAMEID_STOPNSWOP // Your game's SNS ID.
 #define SNS_COPIES			100 // How many copies to colone with sns_flush.
-#define SNS_ORIGIN			0x80000380u // Boot scans + writes to this address. Should be a safe area unaffected by the game until sns_init() is called.
+#define SNS_ORIGIN			0xA0000380u // Boot scans + writes to this address. Should be a safe area unaffected by the game until sns_init() is called.
 
-#define SNS_DOMAIN_START    0x80300000u // Start of RDRAM area to write SNS Clone Payloads
-#define SNS_DOMAIN_END		0x80400000u // End of RDRAM area to write SNS Clone Payloads
+#define SNS_DOMAIN_START    0xA0300000u // Start of RDRAM area to write SNS Clone Payloads
+#define SNS_DOMAIN_END		0xA0400000u // End of RDRAM area to write SNS Clone Payloads
 
 extern uint8_t  snsPayload[SNS_PAYLOAD_LENGTH]; // Payload represented as bytes. Contains magic key, current keys, and two checksums.
 extern uint8_t  snsKeyCount; // Total amount of keys currently occupying the payload stack.

@@ -173,8 +173,7 @@ static void mem_bank_init(int chip_id, bool last)
         size -= TOTAL_RESERVED_SIZE;
     }
 	
-    sns_scan(size);
-	
+	sns_scan(size);
     rsp_bzero_async(base, size);
 }
 
