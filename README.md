@@ -13,29 +13,21 @@ This feature was originally intended for Banjo-Kazooie as early versions of N64s
  
 2. *Download the example ROM under releases*
  - Download the [latest release](https://github.com/AdamRVierra/stop-n-swop-toolkit/releases).  
-
-3. *Prepare the ROM* 
- - If your flash cart automatically boots with a menu ROM, locate the boot ROM. For example *Everdrive* uses *OS64.v64*.
-  - If it directly boots the ROM, this part can be skipped and you can just put `stopnswop.z64` on normally.
- - Make a backup copy of the boot ROM.
- - Rename `stopnswop.z64` to match the boot ROM. (In this example, *OS64.v64*). This will fool your cart into loading yours directly. 
- - When you're done, rename the copy of the boot ROM the same name it had prior.
- - This is necessary as flash carts that load with menus clear the RDRAM, along with the data *Banjo-Kazooie* was trying to send over.
+ - Add it to your Flashcart, either as direct-to-boot or from a menu.
  
-4. *Send data to Banjo-Kazooie*
- - On the menu, press A to select which *Stop 'n' Swop* items you want to make available in *Banjo-Kazooie*.
+3. *Send data to Banjo-Kazooie*
+ - After opening *stopnswop.z64*, press A to select which *Stop 'n' Swop* items you want to make available in *Banjo-Kazooie*.
  - When you're done, turn off your cartridge, swap in your *Banjo-Kazooie* cartridge and turn your console back on within 20-30 seconds. 
  
-5. *Retrieving the items*
+4. *Retrieving the items*
  - In *Banjo-Kazooie*, access the item(s) you've made available.
   - If you need guidance finding items, [watch this guide](https://www.youtube.com/watch?v=KkUPuP6LZog).  
- - After you've retrieved the *Stop 'n' Swop* items, turn off your console, swap back in the flash cart and turn on the power within 20-30 seconds.
+  - After you've retrieved the *Stop 'n' Swop* items, turn off your cartridge, swap in your flash cart and turn your console back on within 20-30 seconds. 
+  - Load *stopnswop.z64*.
  
-6. *Processing the items*
+5. *Processing the items*
  - If all has gone right, the menu should now display checkmarks representing the items you've collected. You've just done *Stop 'n' Swop* with *Banjo-Kazooie*, the way *Rareware* intended!
- 
----
- 
+
 ## Building the Example
 1. *Prerequisites*:
  - [Download Latest Source Code](https://github.com/AdamRVierra/stop-n-swop-toolkit/releases/) or run ```git clone https://github.com/AdamRVierra/stop-n-swop-toolkit.git ```
@@ -53,14 +45,12 @@ This feature was originally intended for Banjo-Kazooie as early versions of N64s
 Unfortnuately, there's no way to erase what items have been unlocked or acquired. The only way is with a Gameshark.
 
 Reset All SNS Collectibles/Locations Codes:
-
-*NTSC-U 1.0: 81283400 0000*
-
-*PAL:        81283220 0000*
-
-*NTSC-U 1.1: 81282240 0000*
-
-*NTSC-J:     81282240 0000*
+| Version     | Code          |
+|-------------|---------------|
+| NTSC-U 1.0  | 81283400 0000 |
+| PAL         | 81283220 0000 |
+| NTSC-U 1.1  | 81282240 0000 |
+| NTSC-J      | 81282240 0000 |
 
 ## Disclaimer
 This project is for educational and preservation purposes.
@@ -73,10 +63,6 @@ This project is for educational and preservation purposes.
  - Swako and [his video](https://www.youtube.com/watch?v=sHQbswTkEjQ) for inspiration
 
 ## Contact
- - adam@adamvierra.com
- - bsky: kbmadam.bsky.social
- - X: x.com/Koolboyman
-
-
-
-
+- [adam@adamvierra.com](mailto:adam@adamvierra.com)  
+- [kbmadam.bsky.social](https://bsky.app/profile/kbmadam.bsky.social)  
+- [@Koolboyman](https://x.com/Koolboyman)  
