@@ -173,7 +173,7 @@ static void mem_bank_init(int chip_id, bool last)
         size -= TOTAL_RESERVED_SIZE;
     }
 	
-	sns_scan(size);
+	sns_scan(0xA0000000u + base, size);
     rsp_bzero_async(base, size);
 }
 
@@ -261,7 +261,7 @@ void stage1(void)
         // might boot a game that does, and that game shouldn't clear
         // 0x80000318).
         rsp_bzero_init(bbplayer);
-		sns_scan(memsize);
+		sns_scan(0xA0000000u, memsize);
         rsp_bzero_async(0xA0000400, memsize);
     }
 
