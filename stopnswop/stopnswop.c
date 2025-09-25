@@ -33,7 +33,7 @@ void sns_flush() {
     {
         uint8_t *slot = (uint8_t*)p;
 		
-		p += 0x2000;
+		p += 0x8000;
 		
         if (sns_read_u32(slot) != SNS_MAGIC && !sns_empty_block(slot)) {
             continue;
@@ -135,11 +135,12 @@ bool sns_contains(uint8_t game, uint8_t flag) {
 void sns_reset() {
 	sns_write_u32(snsPayload, SNS_MAGIC);
 	sns_add(0, SNS_GAME_ID);
+	write_checksum();
 }
 
 void sns_payloadtest() { // Simulate owning a red egg from Banjo-Kazooie
 	sns_write_u32(snsPayload, SNS_MAGIC);
-	sns_add(0, SNS_GAMEID_STOPNSWOP);
+	sns_add(0, SNS_GAMEID_BANJOKAZOOIE);
 	sns_add(SNS_GAMEID_BANJOKAZOOIE, SNS_BANJOKAZOOIE_REDEGG);
 	sns_flush();
 	

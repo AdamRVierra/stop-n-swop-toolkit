@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include "stopnswop.h"
 
-static inline bool sns_scan(int memsize) {
-    volatile uint8_t  *p   = (volatile uint8_t *)(0xA0000400u); 
+static inline bool sns_scan(uint32_t start, int memsize) { // Call this early in the boot process to catch a SNS payload and store in a safe area.
+    volatile uint8_t  *p   = (volatile uint8_t *)(start); 
     volatile uint8_t  *end = p + (memsize - SNS_PAYLOAD_LENGTH);
     volatile uint32_t *dst = (volatile uint32_t *)SNS_ORIGIN;
 

@@ -8,7 +8,7 @@
 #define SNS_COPIES			100 // How many copies to colone with sns_flush.
 #define SNS_ORIGIN			0xA0000380u // Boot scans + writes to this address. Should be a safe area unaffected by the game until sns_init() is called.
 
-#define SNS_DOMAIN_START    0xA0300000u // Start of RDRAM area to write SNS Clone Payloads
+#define SNS_DOMAIN_START    0xA0100000u // Start of RDRAM area to write SNS Clone Payloads
 #define SNS_DOMAIN_END		0xA0400000u // End of RDRAM area to write SNS Clone Payloads
 
 extern uint8_t  snsPayload[SNS_PAYLOAD_LENGTH]; // Payload represented as bytes. Contains magic key, current keys, and two checksums.
